@@ -89,6 +89,38 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  // Método que contiene todos los botones
+  Widget _buildFloatingButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        FloatingActionButton(
+          onPressed: _decrementCounter,
+          tooltip: 'Decrement',
+          child: const Icon(Icons.remove),
+        ),
+        const SizedBox(width: 10), // Espacio entre los botones
+        FloatingActionButton(
+          onPressed: _incrementCounter,
+          tooltip: 'Increment',
+          child: const Icon(Icons.add),
+        ),
+        const SizedBox(width: 10), // Espacio entre los botones
+        FloatingActionButton(
+          onPressed: _restartCounter,
+          tooltip: 'Restart',
+          child: const Icon(Icons.refresh),
+        ),
+        const SizedBox(width: 10), // Espacio entre los botones
+        FloatingActionButton(
+          onPressed: _changeColor,
+          tooltip: 'ChangeColor',
+          child: const Icon(Icons.brush),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -136,34 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
 
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          FloatingActionButton(
-            onPressed: _decrementCounter,
-            tooltip: 'Decrement',
-            child: const Icon(Icons.remove),
-          ),
-          const SizedBox(width: 10), // Espacio entre los botones
-          FloatingActionButton(
-            onPressed: _incrementCounter,
-            tooltip: 'Increment',
-            child: const Icon(Icons.add),
-          ),
-          const SizedBox(width: 10), // Espacio entre los botones
-          FloatingActionButton(
-            onPressed: _restartCounter,
-            tooltip: 'Restart',
-            child: const Icon(Icons.refresh),
-          ),
-          const SizedBox(width: 10), // Espacio entre los botones
-          FloatingActionButton(
-            onPressed: _changeColor,
-            tooltip: 'ChangeColor',
-            child: const Icon(Icons.brush),
-          ),
-        ],
-      ),
+      floatingActionButton: _buildFloatingButtons(),
       
     );
   }
