@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  // Método que contiene todos los botones
+  // Método que contiene los botones
   Widget _buildFloatingButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
