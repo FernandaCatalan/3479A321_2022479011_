@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,6 +11,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    var logger = Logger();
+    logger.d("Logger is working!");
+
     return MaterialApp(
       title: '2022479011',
       theme: ThemeData(
@@ -114,6 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
         const SizedBox(width: 10), // Espacio entre los botones
         FloatingActionButton(
           onPressed: _changeColor,
+          backgroundColor: _color,
           tooltip: 'ChangeColor',
           child: const Icon(Icons.brush),
         ),
@@ -123,6 +128,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var logger = Logger();
+    logger.d("Logger is working!");
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -130,7 +137,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      backgroundColor: _color,
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
@@ -164,9 +170,22 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+        
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child:
+              Row(
+                children: [
+                  Image.asset( "assets/Pixel-Art-Pizza-2.webp", width: 400, fit: BoxFit.cover),
+                  Image.asset( "assets/Pixel-Art-Hot-Pepper-2-1.webp", width: 400, fit: BoxFit.cover),
+                  Image.asset( "assets/Pixel-Art-Watermelon-3.webp", width: 400, fit: BoxFit.cover),
+                ],
+              ),
+            ),
           ],
         ),
       ),
+      
 
       floatingActionButton: _buildFloatingButtons(),
       
