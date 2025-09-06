@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-
+import 'list_art.dart';
+import 'about.dart';
+import 'list_creation.dart';
+  
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
@@ -87,50 +90,82 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if(value == 'about'){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AboutScreen()),
+                );
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return const [
+                PopupMenuItem<String>(value: 'about', child: Text('About')),
+              ];
+            },
+          )
+        ]
       ),
+
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('Pixel Art sobre una grilla personalizable', style: TextStyle(fontSize: 15),),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+        child: Card(
+          elevation: 8,
+          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Pixel Art sobre una grilla personalizable'),
+                const SizedBox(height: 10),
+                //Text('$_counter', style: Theme.of(context).textTheme.headlineMedium),
+                const SizedBox(height: 10),
+
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      Image.asset("assets/Pixel-Art-Pizza-2.webp", width:200, fit: BoxFit.cover),
+                      const SizedBox(width: 10),
+                      Image.asset("assets/Pixel-Art-Hot-Pepper-2-1.webp", width: 200, fit: BoxFit.cover),
+                      const SizedBox(width: 10),
+                      Image.asset("assets/Pixel-Art-Watermelon-3.webp", width: 200, fit: BoxFit.cover),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children:[
+                    ElevatedButton(
+                      onPressed: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ListArtScreen()),
+                        );
+                      },
+                      child: const Text('Crear'),
+                    ),
+                    ElevatedButton(
+                      onPressed: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ListCreationScreen()),
+                        );
+                      },
+                      child: const Text('Compartir'),
+                    ),
+                  ],
+                ),
+              ],
             ),
-        
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child:
-              Row(
-                children: [
-                  Image.asset( "assets/Pixel-Art-Pizza-2.webp", width: 400, fit: BoxFit.cover),
-                  Image.asset( "assets/Pixel-Art-Hot-Pepper-2-1.webp", width: 400, fit: BoxFit.cover),
-                  Image.asset( "assets/Pixel-Art-Watermelon-3.webp", width: 400, fit: BoxFit.cover),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
       ),
-      
-
-      floatingActionButton: _buildFloatingButtons(),
-      
+      floatingActionButton: _buildFloatingButtons(), 
     );
   }
 }

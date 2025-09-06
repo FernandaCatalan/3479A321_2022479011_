@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.interTextTheme(),
       ),
       home: const MyHomePage(title: '2022479011'),
+      //home: ListArtScreen(),
     );
   }
 }
