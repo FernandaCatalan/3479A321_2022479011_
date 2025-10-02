@@ -26,6 +26,17 @@ class MyApp extends StatelessWidget {
       home: const MyHomePage(title: '2022479011'),
       //home: ListArtScreen(),
     );
+
+    return ChangeNotifier<AppData>(
+      create: (context) => AppData(),
+      child: MaterialApp(
+        title: 'MyApp',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: MyHomePage(title: 'Flutter Demo Home Page'),
+      ),
+    );
   }
 }
 

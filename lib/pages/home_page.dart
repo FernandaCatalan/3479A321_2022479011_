@@ -3,6 +3,7 @@ import 'package:logger/logger.dart';
 import 'list_art.dart';
 import 'about.dart';
 import 'list_creation.dart';
+import 'pixel_art_screen.dart';
   
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -54,24 +55,28 @@ class _MyHomePageState extends State<MyHomePage> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         FloatingActionButton(
+          heroTag: "Decrement",
           onPressed: _decrementCounter,
           tooltip: 'Decrement',
           child: const Icon(Icons.remove),
         ),
         const SizedBox(width: 10), // Espacio entre los botones
         FloatingActionButton(
+          heroTag: "Increment",
           onPressed: _incrementCounter,
           tooltip: 'Increment',
           child: const Icon(Icons.add),
         ),
         const SizedBox(width: 10), // Espacio entre los botones
         FloatingActionButton(
+          heroTag: "Restart",
           onPressed: _restartCounter,
           tooltip: 'Restart',
           child: const Icon(Icons.refresh),
         ),
         const SizedBox(width: 10), // Espacio entre los botones
         FloatingActionButton(
+          heroTag: "ChangeColor",
           onPressed: _changeColor,
           backgroundColor: _color,
           tooltip: 'ChangeColor',
@@ -157,6 +162,15 @@ class _MyHomePageState extends State<MyHomePage> {
                         );
                       },
                       child: const Text('Compartir'),
+                    ),
+                    ElevatedButton(
+                      onPressed: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const PixelArtScreen()),
+                        );
+                      },
+                      child: const Text('Pixel Art'),
                     ),
                   ],
                 ),
