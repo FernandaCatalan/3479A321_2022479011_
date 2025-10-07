@@ -2,15 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'pages/home_page.dart';
+import 'package:provider/provider.dart';
+import 'providers/configuration_data.dart';
+import 'pages/configuration_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider<ConfigurationData>(
+      create: (context) => ConfigurationData(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     var logger = Logger();
@@ -25,17 +32,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const MyHomePage(title: '2022479011'),
       //home: ListArtScreen(),
-    );
-
-    return ChangeNotifier<AppData>(
-      create: (context) => AppData(),
-      child: MaterialApp(
-        title: 'MyApp',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: MyHomePage(title: 'Flutter Demo Home Page'),
-      ),
+      //home: const ConfigurationScreen(),
     );
   }
 }

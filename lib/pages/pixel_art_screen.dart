@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/providers/configuration_data.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 
 class PixelArtScreen extends StatefulWidget {
   const PixelArtScreen({super.key});
@@ -11,10 +13,12 @@ class PixelArtScreen extends StatefulWidget {
 
 class _PixelArtScreenState extends State<PixelArtScreen> {
   var logger = Logger();
+  int _sizeGrid = 0;
 
   @override
   void initState() {
     super.initState();
+    _sizeGrid = context.read<ConfigurationData>().size;
     logger.d("PixelArtScreen initialized");
   }
 
@@ -50,6 +54,8 @@ class _PixelArtScreenState extends State<PixelArtScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = context.watch<ConfigurationData>().size;
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pixel Art'),

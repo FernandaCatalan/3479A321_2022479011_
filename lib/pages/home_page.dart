@@ -4,6 +4,7 @@ import 'list_art.dart';
 import 'about.dart';
 import 'list_creation.dart';
 import 'pixel_art_screen.dart';
+import 'configuration_screen.dart';
   
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -60,21 +61,21 @@ class _MyHomePageState extends State<MyHomePage> {
           tooltip: 'Decrement',
           child: const Icon(Icons.remove),
         ),
-        const SizedBox(width: 10), // Espacio entre los botones
+        const SizedBox(width: 10), 
         FloatingActionButton(
           heroTag: "Increment",
           onPressed: _incrementCounter,
           tooltip: 'Increment',
           child: const Icon(Icons.add),
         ),
-        const SizedBox(width: 10), // Espacio entre los botones
+        const SizedBox(width: 10),
         FloatingActionButton(
           heroTag: "Restart",
           onPressed: _restartCounter,
           tooltip: 'Restart',
           child: const Icon(Icons.refresh),
         ),
-        const SizedBox(width: 10), // Espacio entre los botones
+        const SizedBox(width: 10), 
         FloatingActionButton(
           heroTag: "ChangeColor",
           onPressed: _changeColor,
@@ -142,11 +143,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children:[
+                Wrap(
+                  spacing: 10, 
+                  runSpacing: 10, 
+                  alignment: WrapAlignment.center,
+                  children: [
                     ElevatedButton(
-                      onPressed: (){
+                      onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const ListArtScreen()),
@@ -155,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: const Text('Crear'),
                     ),
                     ElevatedButton(
-                      onPressed: (){
+                      onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const ListCreationScreen()),
@@ -164,13 +167,22 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: const Text('Compartir'),
                     ),
                     ElevatedButton(
-                      onPressed: (){
+                      onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const PixelArtScreen()),
                         );
                       },
                       child: const Text('Pixel Art'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ConfigurationScreen()),
+                        );
+                      },
+                      child: const Text('Configuración'),
                     ),
                   ],
                 ),
