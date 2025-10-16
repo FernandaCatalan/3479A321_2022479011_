@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/services/services.dart';
 import 'package:logger/logger.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'pages/home_page.dart';
@@ -9,7 +10,7 @@ import 'pages/configuration_screen.dart';
 void main() {
   runApp(
     ChangeNotifierProvider<ConfigurationData>(
-      create: (context) => ConfigurationData(),
+      create: (context) => ConfigurationData(SharedServices()),
       child: const MyApp(),
     ),
   );

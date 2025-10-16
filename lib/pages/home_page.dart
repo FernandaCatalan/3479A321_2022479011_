@@ -18,6 +18,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   Color _color = Colors.blue;
 
+  bool _showNumbers = false;
+
   void _incrementCounter() {
     setState(() {
       _counter++;
@@ -50,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  // Método que contiene los botones
+  // Método que contiene los botones flotantes
   Widget _buildFloatingButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -127,8 +129,6 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 const Text('Pixel Art sobre una grilla personalizable'),
                 const SizedBox(height: 10),
-                //Text('$_counter', style: Theme.of(context).textTheme.headlineMedium),
-                const SizedBox(height: 10),
 
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -143,46 +143,66 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Wrap(
-                  spacing: 10, 
-                  runSpacing: 10, 
-                  alignment: WrapAlignment.center,
+                
+                Column(
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ListArtScreen()),
-                        );
-                      },
-                      child: const Text('Crear'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('Mostrar números'),
+                        Switch(
+                          value: _showNumbers,
+                          onChanged: (value) {
+                            setState(() {
+                              _showNumbers = value;
+                            });
+                          },
+                        ),
+                      ],
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ListCreationScreen()),
-                        );
-                      },
-                      child: const Text('Compartir'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const PixelArtScreen()),
-                        );
-                      },
-                      child: const Text('Pixel Art'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ConfigurationScreen()),
-                        );
-                      },
-                      child: const Text('Configuración'),
+                    const SizedBox(height: 16),
+                    Wrap(
+                      spacing: 10, 
+                      runSpacing: 10, 
+                      alignment: WrapAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const ListArtScreen()),
+                            );
+                          },
+                          child: const Text('Crear'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const ListCreationScreen()),
+                            );
+                          },
+                          child: const Text('Compartir'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => PixelArtScreen(showNumbers: _showNumbers)),
+                            );
+                          },
+                          child: const Text('Pixel Art'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const ConfigurationScreen()),
+                            );
+                          },
+                          child: const Text('Configuración'),
+                        ),
+                      ],
                     ),
                   ],
                 ),

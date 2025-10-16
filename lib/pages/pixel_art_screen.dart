@@ -4,8 +4,9 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class PixelArtScreen extends StatefulWidget {
-  const PixelArtScreen({super.key});
- 
+  final bool showNumbers;
+
+  const PixelArtScreen({super.key, this.showNumbers = false});
 
   @override
   State<PixelArtScreen> createState() => _PixelArtScreenState();
@@ -13,63 +14,77 @@ class PixelArtScreen extends StatefulWidget {
 
 class _PixelArtScreenState extends State<PixelArtScreen> {
   var logger = Logger();
-  int _sizeGrid = 0;
+  late int _sizeGrid;
+  late List<List<Color>> _gridColors;
 
   @override
   void initState() {
     super.initState();
     _sizeGrid = context.read<ConfigurationData>().size;
-    logger.d("PixelArtScreen initialized");
+    _initializeGrid();
+    logger.d("PixelArtScreen initialized with grid size $_sizeGrid");
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    logger.d("Dependencies changed in PixelArtScreen");
+  void _initializeGrid() {
+    _gridColors = List.generate(
+      _sizeGrid,
+      (_) => List.generate(_sizeGrid, (_) => Colors.white),
+    );
   }
 
-  @override
-  void setState(VoidCallback fn) {
-    super.setState(fn);
-    logger.d("State updated in PixelArtScreen");
-  }
-
-  @override
-  void deactivate() {
-    super.deactivate();
-    logger.d("PixelArtScreen deactivated");
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    logger.d("PixelArtScreen disposed");
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    logger.d("PixelArtScreen reassembled");
+  void _paintCell(int row, int col) {
+    setState(() {
+      final color = context.read<ConfigurationData>().selectedColor;
+      _gridColors[row][col] = color;
+      logger.d("Cell [$row,$col] painted with color $color");
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = context.watch<ConfigurationData>().size;
-    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pixel Art'),
-        leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      body: const Center(
-        child: Text('Aquí va la funcionalidad de Pixel Art'),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(_sizeGrid, (row) {
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: List.generate(_sizeGrid, (col) {
+                  return GestureDetector(
+                    onTap: () => _paintCell(row, col),
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: _gridColors[row][col],
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: widget.showNumbers
+                          ? Text(
+                              '$row,$col',
+                              style: const TextStyle(
+                                  fontSize: 8, color: Colors.black),
+                            )
+                          : null,
+                    ),
+                  );
+                }),
+              );
+            }),
+          ),
+        ),
       ),
     );
-  }
-
-    @override
-  void didUpdateWidget(covariant PixelArtScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    logger.d("Widget updated in PixelArtScreen");
   }
 }
