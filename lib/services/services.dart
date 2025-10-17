@@ -1,10 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedServices {
+
   Future<void> saveSize(int size) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('size', size);
+    prefs.setInt('size', size);
   }
 
   Future<int> loadSize() async {
@@ -14,12 +16,26 @@ class SharedServices {
 
   Future<void> saveColor(Color color) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('color', color.value);
+    prefs.setInt('selectedColor', color.value);
   }
 
   Future<Color> loadColor() async {
     final prefs = await SharedPreferences.getInstance();
-    int colorValue = prefs.getInt('color') ?? Colors.black.value;
+    final colorValue = prefs.getInt('selectedColor') ?? Colors.black.value;
     return Color(colorValue);
+  }
+
+  Future<void> saveGridFlat(List<Color> gridColors) async {
+    final prefs = await SharedPreferences.getInstance();
+    final colorValues = gridColors.map((c) => c.value).toList();
+    await prefs.setString('pixel_grid_flat', jsonEncode(colorValues));
+  }
+
+  Future<List<Color>?> loadGridFlat() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString('pixel_grid_flat');
+    if (data == null) return null;
+    final colorValues = List<int>.from(jsonDecode(data));
+    return colorValues.map((v) => Color(v)).toList();
   }
 }

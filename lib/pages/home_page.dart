@@ -5,6 +5,7 @@ import 'about.dart';
 import 'list_creation.dart';
 import 'pixel_art_screen.dart';
 import 'configuration_screen.dart';
+import 'pixel_art.dart';
   
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -188,7 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => PixelArtScreen(showNumbers: _showNumbers)),
+                              MaterialPageRoute(builder: (context) => PixelArt(/*showNumbers: _showNumbers*/)),
                             );
                           },
                           child: const Text('Pixel Art'),
