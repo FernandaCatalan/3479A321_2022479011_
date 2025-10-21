@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedServices {
-
   Future<void> saveSize(int size) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('size', size);
@@ -37,5 +36,18 @@ class SharedServices {
     if (data == null) return null;
     final colorValues = List<int>.from(jsonDecode(data));
     return colorValues.map((v) => Color(v)).toList();
+  }
+
+  Future<void> saveCreations(List<String> creations) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('pixel_creations', jsonEncode(creations));
+  }
+
+  Future<List<String>> loadCreations() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString('pixel_creations');
+    if (data == null) return <String>[];
+    final List<dynamic> decoded = jsonDecode(data);
+    return decoded.map((e) => e.toString()).toList();
   }
 }

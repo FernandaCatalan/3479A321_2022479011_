@@ -6,11 +6,13 @@ class ConfigurationData extends ChangeNotifier {
 
   int _size = 10;
   Color _selectedColor = Colors.black;
+  List<String> _creations = [];
 
   int get size => _size;
   Color get selectedColor => _selectedColor;
+  List<String> get creations => _creations;
 
-  ConfigurationData(this._prefsService){
+  ConfigurationData(this._prefsService) {
     _loadPreferences();
   }
 
@@ -20,15 +22,22 @@ class ConfigurationData extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setColor(Color newColor) async{
+  Future<void> setColor(Color newColor) async {
     _selectedColor = newColor;
     await _prefsService.saveColor(newColor);
-    notifyListeners(); 
+    notifyListeners();
   }
 
   Future<void> _loadPreferences() async {
     _size = await _prefsService.loadSize();
     _selectedColor = await _prefsService.loadColor();
+    _creations = await _prefsService.loadCreations();
+    notifyListeners();
+  }
+
+  Future<void> addCreation(String filePath) async {
+    _creations.add(filePath);
+    await _prefsService.saveCreations(_creations);
     notifyListeners();
   }
 }

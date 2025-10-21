@@ -1,8 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/services/services.dart';
 import 'package:flutter_application_1/providers/configuration_data.dart';
 import 'package:provider/provider.dart';
 import 'package:logger/logger.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PixelArt extends StatefulWidget {
   const PixelArt({super.key});
@@ -15,9 +22,9 @@ class _PixelArtState extends State<PixelArt> {
   final Logger logger = Logger();
   final SharedServices _prefsService = SharedServices();
 
-  late List<Color> _cellColors = [];
+  late List<Color> _cellColors;
   late int _sizeGrid;
-  Color _selectedColor = Colors.black;
+  late Color _selectedColor;
   bool _showNumbers = true;
   final TextEditingController _titleController = TextEditingController();
 
@@ -39,13 +46,15 @@ class _PixelArtState extends State<PixelArt> {
   @override
   void initState() {
     super.initState();
+    _cellColors = [];
     _loadData();
   }
 
   Future<void> _loadData() async {
     try {
-      _sizeGrid = await _prefsService.loadSize();
-      _selectedColor = context.read<ConfigurationData>().selectedColor;
+      final config = context.read<ConfigurationData>();
+      _sizeGrid = config.size;
+      _selectedColor = config.selectedColor;
 
       final savedGrid = await _prefsService.loadGridFlat();
       if (savedGrid != null && savedGrid.length == _sizeGrid * _sizeGrid) {
@@ -81,6 +90,76 @@ class _PixelArtState extends State<PixelArt> {
     return background.computeLuminance() > 0.5 ? Colors.black : Colors.white;
   }
 
+  Future<void> _saveCreation() async {
+    final title = _titleController.text.trim();
+    if (title.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Por favor ingresa un título")),
+      );
+      return;
+    }
+
+    await context.read<ConfigurationData>().addCreation(title);
+    logger.d("Creación guardada con título: $title");
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Creación '$title' guardada")),
+    );
+  }
+
+  Future<String?> _savePixelArt(String title) async {
+    try {
+      final recorder = ui.PictureRecorder();
+      final canvas = Canvas(recorder);
+      final paint = Paint();
+
+      final cellSize = 20.0; 
+      for (int y = 0; y < _sizeGrid; y++) {
+        for (int x = 0; x < _sizeGrid; x++) {
+          paint.color = _cellColors[y * _sizeGrid + x];
+          canvas.drawRect(
+            Rect.fromLTWH(x * cellSize, y * cellSize, cellSize, cellSize),
+            paint,
+          );
+        }
+      }
+
+      final picture = recorder.endRecording();
+      final img = await picture.toImage(
+        (_sizeGrid * cellSize).toInt(),
+        (_sizeGrid * cellSize).toInt(),
+      );
+      final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
+      final pngBytes = byteData!.buffer.asUint8List();
+
+      final dir = await getApplicationDocumentsDirectory();
+      final filePath = '${dir.path}/$title.png';
+      final file = File(filePath);
+      await file.writeAsBytes(pngBytes);
+
+      await context.read<ConfigurationData>().addCreation(filePath);
+
+      return filePath;
+    } catch (e) {
+      logger.e("Error al guardar imagen: $e");
+      return null;
+    }
+  }
+
+  Future<void> _shareGrid() async {
+    if (_titleController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Ingresa un título para compartir")),
+      );
+      return;
+    }
+
+    final path = await _savePixelArt(_titleController.text.trim());
+    if (path != null) {
+      await Share.shareXFiles([XFile(path)], text: 'Mira mi Pixel Art!');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_cellColors.isEmpty) {
@@ -91,45 +170,52 @@ class _PixelArtState extends State<PixelArt> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pixel Art - Versión Preliminar'),
+        title: const Text('Pixel Art - Guardado de Creaciones'),
       ),
       body: SafeArea(
         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Row(
+              child: Column(
                 children: [
-                  const Text('Mostrar números'),
-                  Switch(
-                    value: _showNumbers,
-                    onChanged: (value) {
-                      setState(() {
-                        _showNumbers = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(width: 16),
-                  Text('$_sizeGrid x $_sizeGrid'),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      controller: _titleController,
-                      decoration: const InputDecoration(
-                        hintText: 'Enter title',
-                        border: OutlineInputBorder(),
+                  Row(
+                    children: [
+                      const Text('Mostrar números'),
+                      Switch(
+                        value: _showNumbers,
+                        onChanged: (value) {
+                          setState(() => _showNumbers = value);
+                        },
                       ),
-                      onSubmitted: (value) {
-                        logger.d('Título ingresado: $value');
-                      },
-                    ),
+                      const SizedBox(width: 16),
+                      Text('$_sizeGrid x $_sizeGrid'),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: () {
-                      logger.d('Botón Submit presionado');
-                    },
-                    child: const Text('Submit'),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _titleController,
+                          decoration: const InputDecoration(
+                            hintText: 'Nombre de la creación',
+                            border: OutlineInputBorder(),
+                          ),
+                          onSubmitted: (_) => _saveCreation(),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: _saveCreation,
+                        child: const Text('Guardar'),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: _shareGrid,
+                        child: const Text('Compartir'),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -137,7 +223,8 @@ class _PixelArtState extends State<PixelArt> {
             Expanded(
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: _sizeGrid),
+                  crossAxisCount: _sizeGrid,
+                ),
                 itemCount: _sizeGrid * _sizeGrid,
                 itemBuilder: (context, index) {
                   final cellColor = _cellColors[index];
@@ -171,9 +258,7 @@ class _PixelArtState extends State<PixelArt> {
                     final bool isSelected = color == _selectedColor;
                     return GestureDetector(
                       onTap: () {
-                        setState(() {
-                          _selectedColor = color;
-                        });
+                        setState(() => _selectedColor = color);
                         context.read<ConfigurationData>().setColor(color);
                       },
                       child: AnimatedContainer(
