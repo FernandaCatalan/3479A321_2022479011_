@@ -88,6 +88,20 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                 labelText: 'Seleccionar color',
               ),
             ),
+            const Text(
+              'Opacidad del fondo',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Slider(
+              value: config.backgroundOpacity,
+              min: 0.1,
+              max: 1.0,
+              divisions: 10,
+              label: '${(config.backgroundOpacity * 100).toInt()}%',
+              onChanged: (value) {
+                context.read<ConfigurationData>().setBackgroundOpacity(value);
+              },
+            ),
             const SizedBox(height: 30),
             Center(
               child: Column(

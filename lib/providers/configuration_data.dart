@@ -12,6 +12,16 @@ class ConfigurationData extends ChangeNotifier {
   Color get selectedColor => _selectedColor;
   List<String> get creations => _creations;
 
+  double _backgroundOpacity = 0.5;
+
+  double get backgroundOpacity => _backgroundOpacity;
+
+  void setBackgroundOpacity(double value) {
+    _backgroundOpacity = value;
+    _prefsService.saveDouble('backgroundOpacity', value);
+    notifyListeners();
+  }
+
   ConfigurationData(this._prefsService) {
     _loadPreferences();
   }
@@ -32,6 +42,7 @@ class ConfigurationData extends ChangeNotifier {
     _size = await _prefsService.loadSize();
     _selectedColor = await _prefsService.loadColor();
     _creations = await _prefsService.loadCreations();
+    _backgroundOpacity = await _prefsService.loadDouble('backgroundOpacity') ?? 0.5;
     notifyListeners();
   }
 

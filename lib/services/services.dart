@@ -50,4 +50,14 @@ class SharedServices {
     final List<dynamic> decoded = jsonDecode(data);
     return decoded.map((e) => e.toString()).toList();
   }
+
+  Future<void> saveDouble(String key, double value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(key, value);
+  }
+
+  Future<double?> loadDouble(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(key);
+  }
 }
